@@ -8,7 +8,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/mkbntech/app-services.git'
+    repoURL: 'https://github.com/mkbntech/app-services-gitops.git'
     targetRevision: main
     path: manifests/overlays/production
   destination:

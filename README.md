@@ -1,6 +1,6 @@
 # Trailhead Supply Co. — GitOps Repository (`app-services-gitops`)
 
-Declarative Kubernetes and Knative Serverless manifests for Trailhead Supply Co. microservices on **OpenShift 4.22.1**, supporting **Single Node OpenShift (SNO Staging)** and **HA Multi-Node Production**.
+Declarative Kubernetes and Knative Serverless manifests for Trailhead Supply Co. microservices on **OpenShift 4.22.8**, supporting **Single Node OpenShift (SNO Staging)** and **HA Multi-Node Production**.
 
 ---
 
