@@ -1,0 +1,25 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: review-service
+  labels:
+    app.kubernetes.io/part-of: trailhead-platform
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/scale-to-zero-pod-retention-period: "90s"
+    spec:
+      containers:
+        - image: image-registry.openshift-image-registry.svc:5000/trailhead-staging/review-service:latest
+          ports:
+            - containerPort: 8003
+          env:
+            - name: SERVICE_VERSION
+              value: "1.0.0"
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://reviews-db:5432/reviews_db"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "trailhead"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "trailhead_pwd"

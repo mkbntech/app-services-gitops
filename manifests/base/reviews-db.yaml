@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reviews-db
+  labels:
+    app: reviews-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reviews-db
+  template:
+    metadata:
+      labels:
+        app: reviews-db
+    spec:
+      containers:
+        - name: postgres
+          image: registry.redhat.io/rhel9/postgresql-15:latest
+          env:
+            - name: POSTGRESQL_USER
+              value: trailhead
+            - name: POSTGRESQL_PASSWORD
+              value: trailhead_pwd
+            - name: POSTGRESQL_DATABASE
+              value: reviews_db
+          ports:
+            - containerPort: 5432
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          readinessProbe:
+            exec:
+              command: ["pg_isready", "-U", "trailhead", "-d", "reviews_db"]
+            initialDelaySeconds: 5
+            periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: reviews-db
+spec:
+  ports:
+    - port: 5432
+      targetPort: 5432
+  selector:
+    app: reviews-db

@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: trailhead-sno-app
+  namespace: openshift-gitops
+  labels:
+    env: staging-sno
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/mkbntech/app-services.git'
+    targetRevision: main
+    path: manifests/overlays/sno
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: trailhead-staging
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true
+    retry:
+      limit: 3
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

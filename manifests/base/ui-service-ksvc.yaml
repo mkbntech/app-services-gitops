@@ -1,0 +1,25 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: ui-service
+  labels:
+    app.kubernetes.io/part-of: trailhead-platform
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/scale-to-zero-pod-retention-period: "90s"
+    spec:
+      containers:
+        - image: image-registry.openshift-image-registry.svc:5000/trailhead-staging/ui-service:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: CATALOGUE_SERVICE_URL
+              value: "http://catalogue-service.trailhead-staging.svc.cluster.local"
+            - name: RECOMMENDATION_SERVICE_URL
+              value: "http://recommendation-service.trailhead-staging.svc.cluster.local"
+            - name: REVIEW_SERVICE_URL
+              value: "http://review-service.trailhead-staging.svc.cluster.local"

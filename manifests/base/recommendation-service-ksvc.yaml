@@ -1,0 +1,19 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: recommendation-service
+  labels:
+    app.kubernetes.io/part-of: trailhead-platform
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/scale-to-zero-pod-retention-period: "90s"
+    spec:
+      containers:
+        - image: image-registry.openshift-image-registry.svc:5000/trailhead-staging/recommendation-service:latest
+          ports:
+            - containerPort: 8002
+          env:
+            - name: SERVICE_VERSION
+              value: "1.0.0"

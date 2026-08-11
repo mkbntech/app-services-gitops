@@ -1,0 +1,39 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ingress-to-eventlistener
+  namespace: trailhead-production
+spec:
+  podSelector:
+    matchLabels:
+      eventlistener: github-listener
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              network.openshift.io/policy-group: ingress
+      ports:
+        - protocol: TCP
+          port: 8000
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-review-service-to-postgres
+  namespace: trailhead-production
+spec:
+  podSelector:
+    matchLabels:
+      app: reviews-db
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              serving.knative.dev/service: review-service
+      ports:
+        - protocol: TCP
+          port: 5432

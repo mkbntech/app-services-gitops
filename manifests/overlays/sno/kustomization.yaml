@@ -1,0 +1,26 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: trailhead-staging
+
+bases:
+  - ../../base
+
+images:
+  - name: image-registry.openshift-image-registry.svc:5000/trailhead-staging/ui-service
+    newTag: main
+  - name: image-registry.openshift-image-registry.svc:5000/trailhead-staging/catalogue-service
+    newTag: main
+  - name: image-registry.openshift-image-registry.svc:5000/trailhead-staging/recommendation-service
+    newTag: main
+  - name: image-registry.openshift-image-registry.svc:5000/trailhead-staging/review-service
+    newTag: main
+
+patches:
+  - target:
+      kind: Service
+      group: serving.knative.dev
+    patch: |-
+      - op: add
+        path: /spec/template/metadata/annotations/autoscaling.knative.dev~1scale-to-zero-pod-retention-period
+        value: "90s"

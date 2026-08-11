@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: trailhead-prod-app
+  namespace: openshift-gitops
+  labels:
+    env: production
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/mkbntech/app-services.git'
+    targetRevision: main
+    path: manifests/overlays/production
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: trailhead-production
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

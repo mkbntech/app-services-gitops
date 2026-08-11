@@ -1,0 +1,26 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: reviews-db-ha
+  namespace: trailhead-production
+spec:
+  instances: 3
+  storage:
+    size: 20Gi
+    storageClass: gp3-csi
+  walStorage:
+    size: 10Gi
+    storageClass: gp3-csi
+  bootstrap:
+    initdb:
+      database: reviews_db
+      owner: trailhead
+      secret:
+        name: reviews-db-credentials
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "500m"
+    limits:
+      memory: "2Gi"
+      cpu: "2"
