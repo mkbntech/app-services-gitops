@@ -23,3 +23,5 @@ spec:
               value: "trailhead"
             - name: SPRING_DATASOURCE_PASSWORD
               value: "trailhead_pwd"
+            - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+              value: "org.postgresql.Driver"
