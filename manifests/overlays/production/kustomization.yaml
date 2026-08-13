@@ -11,17 +11,17 @@ resources:
   - security-networkpolicies.yaml
 
 images:
-  - name: image-registry.openshift-image-registry.svc:5000/trailhead-staging/ui-service
-    newName: image-registry.openshift-image-registry.svc:5000/trailhead-production/ui-service
+  - name: quay.io/mkbn02/ui-service
+    newName: quay.io/mkbn02/ui-service
     newTag: main
-  - name: image-registry.openshift-image-registry.svc:5000/trailhead-staging/catalogue-service
-    newName: image-registry.openshift-image-registry.svc:5000/trailhead-production/catalogue-service
+  - name: quay.io/mkbn02/catalogue-service
+    newName: quay.io/mkbn02/catalogue-service
     newTag: main
-  - name: image-registry.openshift-image-registry.svc:5000/trailhead-staging/recommendation-service
-    newName: image-registry.openshift-image-registry.svc:5000/trailhead-production/recommendation-service
+  - name: quay.io/mkbn02/recommendation-service
+    newName: quay.io/mkbn02/recommendation-service
     newTag: main
-  - name: image-registry.openshift-image-registry.svc:5000/trailhead-staging/review-service
-    newName: image-registry.openshift-image-registry.svc:5000/trailhead-production/review-service
+  - name: quay.io/mkbn02/review-service
+    newName: quay.io/mkbn02/review-service
     newTag: main
 
 patches:

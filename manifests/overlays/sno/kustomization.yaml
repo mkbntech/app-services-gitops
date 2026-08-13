@@ -8,12 +8,16 @@ bases:
 
 images:
   - name: image-registry.openshift-image-registry.svc:5000/trailhead-staging/ui-service
+    newName: image-registry.openshift-image-registry.svc:5000/trailhead-staging/ui-service
     newTag: main
   - name: image-registry.openshift-image-registry.svc:5000/trailhead-staging/catalogue-service
+    newName: image-registry.openshift-image-registry.svc:5000/trailhead-staging/catalogue-service
     newTag: main
   - name: image-registry.openshift-image-registry.svc:5000/trailhead-staging/recommendation-service
+    newName: image-registry.openshift-image-registry.svc:5000/trailhead-staging/recommendation-service
     newTag: main
   - name: image-registry.openshift-image-registry.svc:5000/trailhead-staging/review-service
+    newName: image-registry.openshift-image-registry.svc:5000/trailhead-staging/review-service
     newTag: main
 
 patches:
