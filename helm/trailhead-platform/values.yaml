@@ -49,6 +49,11 @@ services:
       imageName: ui-service
       port: 3000
       replicas: 1
+      env:
+        CATALOGUE_SERVICE_URL: "http://catalogue-service:8001"
+        RECOMMENDATION_SERVICE_URL: "http://recommendation-service:8002"
+        REVIEW_SERVICE_URL: "http://review-service:8003"
+        SERVICE_VERSION: "1.0.0"
       resources:
         requests:
           cpu: 50m
@@ -61,6 +66,8 @@ services:
       imageName: catalogue-service
       port: 8001
       replicas: 1
+      env:
+        SERVICE_VERSION: "1.0.0"
       resources:
         requests:
           cpu: 50m
@@ -73,6 +80,9 @@ services:
       imageName: recommendation-service
       port: 8002
       replicas: 1
+      env:
+        CATALOGUE_SERVICE_URL: "http://catalogue-service:8001"
+        SERVICE_VERSION: "1.0.0"
       resources:
         requests:
           cpu: 50m
