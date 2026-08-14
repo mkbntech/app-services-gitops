@@ -1,9 +1,13 @@
-# SNO Staging Environment Overrides
+# SNO Staging Environment Overrides for Trailhead App
 
 global:
   namespace: trailhead-staging
   environment: sno-staging
   registryHost: image-registry.openshift-image-registry.svc:5000/trailhead-staging
+
+# Operators are managed separately via dedicated ArgoCD App (trailhead-operators-app)
+operators:
+  enabled: false
 
 services:
   autoscaling:

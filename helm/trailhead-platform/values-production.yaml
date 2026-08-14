@@ -5,14 +5,15 @@ global:
   environment: production
   registryHost: image-registry.openshift-image-registry.svc:5000/trailhead-production
 
+# Operators are managed separately via dedicated ArgoCD App (trailhead-operators-app)
+operators:
+  enabled: false
+
 services:
   autoscaling:
     scaleToZeroRetentionPeriod: 300s
     minScale: 1
     maxScale: 10
-
-operators:
-  enabled: false # Operators are pre-installed in production
 
 tekton-cicd:
   enabled: false # CI runs in staging, CD deploys to production

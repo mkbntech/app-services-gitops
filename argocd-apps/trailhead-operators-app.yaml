@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: trailhead-operators-app
+  namespace: openshift-gitops
+  labels:
+    env: cluster-operators
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/mkbntech/app-services-gitops.git'
+    targetRevision: main
+    path: helm/trailhead-platform/charts/operators
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: openshift-operators
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true
+    retry:
+      limit: 3
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
