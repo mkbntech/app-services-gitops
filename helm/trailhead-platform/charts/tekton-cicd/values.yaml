@@ -1,0 +1,14 @@
+enabled: true
+serviceAccount:
+  name: trailhead-pipeline-sa
+git:
+  appRepoUrl: https://github.com/mkbntech/app-services.git
+  gitopsRepoUrl: https://github.com/mkbntech/app-services-gitops.git
+  branch: main
+webhook:
+  secretToken: TrailheadSecureWebhookKey2026!
+storage:
+  pvName: sno-tekton-pv
+  pvcName: shared-workspace-pvc
+  hostPath: /tmp/sno-tekton-workspace
+  storageSize: 10Gi

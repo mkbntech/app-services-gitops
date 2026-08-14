@@ -1,0 +1,54 @@
+{{- if .Values.enabled }}
+{{- $ns := .Values.global.namespace | default .Release.Namespace }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.storage.pvName }}
+spec:
+  capacity:
+    storage: {{ .Values.storage.storageSize }}
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-sc
+  hostPath:
+    path: {{ .Values.storage.hostPath | quote }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.storage.pvcName }}
+  namespace: {{ $ns }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+  storageClassName: local-sc
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: fix-sno-workspace-permissions
+  namespace: {{ $ns }}
+spec:
+  template:
+    spec:
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      restartPolicy: Never
+      containers:
+        - name: fix-permissions
+          image: registry.redhat.io/rhel9/support-tools:latest
+          command: ["sh", "-c", "mkdir -p /workspace/source /workspace/gitops && chmod -R 777 /workspace && chcon -R -t container_file_t /workspace || true"]
+          securityContext:
+            privileged: true
+            runAsUser: 0
+          volumeMounts:
+            - name: host-workspace
+              mountPath: /workspace
+      volumes:
+        - name: host-workspace
+          hostPath:
+            path: {{ .Values.storage.hostPath | quote }}
+{{- end }}

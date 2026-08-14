@@ -1,0 +1,22 @@
+apiVersion: v2
+name: trailhead-platform
+description: Master Umbrella Helm Chart for Trailhead Supply Co. Operators, Infrastructure, Microservices, and Tekton CI/CD
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+maintainers:
+  - name: Trailhead Platform Team
+    email: devops@trailhead.co
+dependencies:
+  - name: operators
+    version: 1.0.0
+    repository: "file://charts/operators"
+  - name: database
+    version: 1.0.0
+    repository: "file://charts/database"
+  - name: services
+    version: 1.0.0
+    repository: "file://charts/services"
+  - name: tekton-cicd
+    version: 1.0.0
+    repository: "file://charts/tekton-cicd"

@@ -10,7 +10,10 @@ spec:
   source:
     repoURL: 'https://github.com/mkbntech/app-services-gitops.git'
     targetRevision: main
-    path: manifests/overlays/sno
+    path: helm/trailhead-platform
+    helm:
+      valueFiles:
+        - values-sno.yaml
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: trailhead-staging

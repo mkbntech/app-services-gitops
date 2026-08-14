@@ -1,0 +1,14 @@
+enabled: true
+pipelines:
+  enabled: true
+  channel: latest
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+serverless:
+  enabled: true
+  channel: stable
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  knativeServing:
+    enabled: true
+    namespace: knative-serving

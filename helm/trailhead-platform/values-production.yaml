@@ -1,0 +1,18 @@
+# Multi-Node Production Environment Overrides
+
+global:
+  namespace: trailhead-production
+  environment: production
+  registryHost: image-registry.openshift-image-registry.svc:5000/trailhead-production
+
+services:
+  autoscaling:
+    scaleToZeroRetentionPeriod: 300s
+    minScale: 1
+    maxScale: 10
+
+operators:
+  enabled: false # Operators are pre-installed in production
+
+tekton-cicd:
+  enabled: false # CI runs in staging, CD deploys to production

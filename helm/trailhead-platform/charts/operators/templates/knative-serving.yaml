@@ -1,0 +1,8 @@
+{{- if and .Values.enabled .Values.serverless.enabled .Values.serverless.knativeServing.enabled }}
+apiVersion: operator.knative.dev/v1beta1
+kind: KnativeServing
+metadata:
+  name: knative-serving
+  namespace: {{ .Values.serverless.knativeServing.namespace | quote }}
+spec: {}
+{{- end }}

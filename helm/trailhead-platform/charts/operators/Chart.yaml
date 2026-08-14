@@ -1,0 +1,5 @@
+apiVersion: v2
+name: operators
+description: Helm chart to manage OpenShift Pipelines and Serverless Operators
+type: application
+version: 1.0.0

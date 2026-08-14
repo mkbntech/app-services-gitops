@@ -1,0 +1,5 @@
+apiVersion: v2
+name: tekton-cicd
+description: Helm chart for Tekton CI/CD Pipeline, Tasks, Secrets, RBAC, and Triggers
+type: application
+version: 1.0.0

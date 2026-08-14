@@ -10,7 +10,10 @@ spec:
   source:
     repoURL: 'https://github.com/mkbntech/app-services-gitops.git'
     targetRevision: main
-    path: manifests/overlays/production
+    path: helm/trailhead-platform
+    helm:
+      valueFiles:
+        - values-production.yaml
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: trailhead-production

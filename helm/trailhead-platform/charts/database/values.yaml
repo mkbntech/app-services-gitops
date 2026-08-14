@@ -1,0 +1,14 @@
+enabled: true
+name: reviews-db
+image: docker.io/library/postgres:latest
+user: trailhead
+password: trailhead_pwd
+dbName: reviews_db
+port: 5432
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

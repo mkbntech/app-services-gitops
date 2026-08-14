@@ -1,0 +1,172 @@
+{{- if .Values.enabled }}
+{{- $ns := .Values.global.namespace | default .Release.Namespace }}
+{{- $reg := .Values.global.registryHost }}
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: trailhead-platform-pipeline
+  namespace: {{ $ns }}
+spec:
+  params:
+    - name: git-url
+      default: {{ .Values.git.appRepoUrl | quote }}
+    - name: git-revision
+      default: {{ .Values.git.branch | quote }}
+    - name: registry-host
+      default: {{ $reg | quote }}
+    - name: gitops-repo-url
+      default: {{ .Values.git.gitopsRepoUrl | quote }}
+  workspaces:
+    - name: shared-workspace
+    - name: dockerconfig
+      optional: true
+  tasks:
+    # Task 1: Fetch Source Code from App Repo
+    - name: fetch-source
+      taskRef:
+        resolver: cluster
+        params:
+          - name: name
+            value: git-clone
+          - name: namespace
+            value: openshift-pipelines
+          - name: kind
+            value: task
+      workspaces:
+        - name: output
+          workspace: shared-workspace
+      params:
+        - name: URL
+          value: $(params.git-url)
+        - name: REVISION
+          value: $(params.git-revision)
+        - name: SUBDIRECTORY
+          value: "source"
+        - name: DELETE_EXISTING
+          value: "true"
+
+    # Task 2a: Build Catalogue Service (Python)
+    - name: build-catalogue
+      runAfter: ["fetch-source"]
+      taskRef:
+        resolver: cluster
+        params:
+          - name: name
+            value: buildah
+          - name: namespace
+            value: openshift-pipelines
+          - name: kind
+            value: task
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+        - name: dockerconfig
+          workspace: dockerconfig
+      params:
+        - name: CONTEXT
+          value: "source/services/catalogue-service"
+        - name: DOCKERFILE
+          value: "source/services/catalogue-service/Dockerfile"
+        - name: IMAGE
+          value: "$(params.registry-host)/catalogue-service:$(params.git-revision)"
+        - name: TLS_VERIFY
+          value: "false"
+
+    # Task 2b: Build Recommendation Service (Go)
+    - name: build-recommendation
+      runAfter: ["build-catalogue"]
+      taskRef:
+        resolver: cluster
+        params:
+          - name: name
+            value: buildah
+          - name: namespace
+            value: openshift-pipelines
+          - name: kind
+            value: task
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+        - name: dockerconfig
+          workspace: dockerconfig
+      params:
+        - name: CONTEXT
+          value: "source/services/recommendation-service"
+        - name: DOCKERFILE
+          value: "source/services/recommendation-service/Dockerfile"
+        - name: IMAGE
+          value: "$(params.registry-host)/recommendation-service:$(params.git-revision)"
+        - name: TLS_VERIFY
+          value: "false"
+
+    # Task 2c: Build Review Service (Java Spring Boot)
+    - name: build-review
+      runAfter: ["build-recommendation"]
+      taskRef:
+        resolver: cluster
+        params:
+          - name: name
+            value: buildah
+          - name: namespace
+            value: openshift-pipelines
+          - name: kind
+            value: task
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+        - name: dockerconfig
+          workspace: dockerconfig
+      params:
+        - name: CONTEXT
+          value: "source/services/review-service"
+        - name: DOCKERFILE
+          value: "source/services/review-service/Dockerfile"
+        - name: IMAGE
+          value: "$(params.registry-host)/review-service:$(params.git-revision)"
+        - name: TLS_VERIFY
+          value: "false"
+
+    # Task 2d: Build Storefront UI Service (Node.js)
+    - name: build-ui
+      runAfter: ["build-review"]
+      taskRef:
+        resolver: cluster
+        params:
+          - name: name
+            value: buildah
+          - name: namespace
+            value: openshift-pipelines
+          - name: kind
+            value: task
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+        - name: dockerconfig
+          workspace: dockerconfig
+      params:
+        - name: CONTEXT
+          value: "source/services/ui-service"
+        - name: DOCKERFILE
+          value: "source/services/ui-service/Dockerfile"
+        - name: IMAGE
+          value: "$(params.registry-host)/ui-service:$(params.git-revision)"
+        - name: TLS_VERIFY
+          value: "false"
+
+    # Task 3: Update GitOps Repository
+    - name: update-gitops
+      runAfter: ["build-ui"]
+      taskRef:
+        name: update-gitops-repository
+        kind: Task
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+      params:
+        - name: git-revision
+          value: $(params.git-revision)
+        - name: gitops-repo-url
+          value: $(params.gitops-repo-url)
+        - name: app-namespace
+          value: {{ $ns | quote }}
+{{- end }}

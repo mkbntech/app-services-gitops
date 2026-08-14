@@ -1,0 +1,56 @@
+enabled: true
+tag: main
+autoscaling:
+  scaleToZeroRetentionPeriod: 90s
+  minScale: 0
+  maxScale: 5
+microservices:
+  uiService:
+    name: ui-service
+    imageName: ui-service
+    port: 3000
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+  catalogueService:
+    name: catalogue-service
+    imageName: catalogue-service
+    port: 8001
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+  recommendationService:
+    name: recommendation-service
+    imageName: recommendation-service
+    port: 8002
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+  reviewService:
+    name: review-service
+    imageName: review-service
+    port: 8003
+    env:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://reviews-db:5432/reviews_db
+      SPRING_DATASOURCE_USERNAME: trailhead
+      SPRING_DATASOURCE_PASSWORD: trailhead_pwd
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi

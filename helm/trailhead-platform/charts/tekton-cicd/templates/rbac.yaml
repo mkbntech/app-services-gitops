@@ -1,0 +1,57 @@
+{{- if .Values.enabled }}
+{{- $ns := .Values.global.namespace | default .Release.Namespace }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ .Values.serviceAccount.name }}
+  namespace: {{ $ns }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: trailhead-pipeline-admin-binding
+  namespace: {{ $ns }}
+subjects:
+- kind: ServiceAccount
+  name: {{ .Values.serviceAccount.name }}
+  namespace: {{ $ns }}
+roleRef:
+  kind: ClusterRole
+  name: edit
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ printf "trailhead-pipeline-eventlistener-roles-binding-%s" $ns }}
+subjects:
+- kind: ServiceAccount
+  name: {{ .Values.serviceAccount.name }}
+  namespace: {{ $ns }}
+roleRef:
+  kind: ClusterRole
+  name: tekton-triggers-eventlistener-roles
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ printf "trailhead-pipeline-eventlistener-clusterroles-binding-%s" $ns }}
+subjects:
+- kind: ServiceAccount
+  name: {{ .Values.serviceAccount.name }}
+  namespace: {{ $ns }}
+roleRef:
+  kind: ClusterRole
+  name: tekton-triggers-eventlistener-clusterroles
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: github-webhook-secret
+  namespace: {{ $ns }}
+type: Opaque
+stringData:
+  secretToken: {{ .Values.webhook.secretToken | quote }}
+{{- end }}

@@ -1,0 +1,116 @@
+# Default values for trailhead-platform umbrella chart
+
+global:
+  namespace: trailhead-staging
+  environment: sno-staging
+  registryHost: image-registry.openshift-image-registry.svc:5000/trailhead-staging
+
+# Subchart 1: Operators Management
+operators:
+  enabled: true
+  pipelines:
+    enabled: true
+    channel: latest
+    source: redhat-operators
+    sourceNamespace: openshift-marketplace
+  serverless:
+    enabled: true
+    channel: stable
+    source: redhat-operators
+    sourceNamespace: openshift-marketplace
+    knativeServing:
+      enabled: true
+      namespace: knative-serving
+
+# Subchart 2: Database Management (reviews-db)
+database:
+  enabled: true
+  name: reviews-db
+  image: docker.io/library/postgres:latest
+  user: trailhead
+  password: trailhead_pwd
+  dbName: reviews_db
+  port: 5432
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+# Subchart 3: Knative Microservices Management
+services:
+  enabled: true
+  tag: main
+  autoscaling:
+    scaleToZeroRetentionPeriod: 90s
+    minScale: 0
+    maxScale: 5
+  microservices:
+    uiService:
+      name: ui-service
+      imageName: ui-service
+      port: 3000
+      resources:
+        requests:
+          cpu: 50m
+          memory: 128Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
+    catalogueService:
+      name: catalogue-service
+      imageName: catalogue-service
+      port: 8001
+      resources:
+        requests:
+          cpu: 50m
+          memory: 128Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
+    recommendationService:
+      name: recommendation-service
+      imageName: recommendation-service
+      port: 8002
+      resources:
+        requests:
+          cpu: 50m
+          memory: 128Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
+    reviewService:
+      name: review-service
+      imageName: review-service
+      port: 8003
+      env:
+        SPRING_DATASOURCE_URL: jdbc:postgresql://reviews-db:5432/reviews_db
+        SPRING_DATASOURCE_USERNAME: trailhead
+        SPRING_DATASOURCE_PASSWORD: trailhead_pwd
+        SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
+
+# Subchart 4: Tekton CI/CD & Triggers Management
+tekton-cicd:
+  enabled: true
+  serviceAccount:
+    name: trailhead-pipeline-sa
+  git:
+    appRepoUrl: https://github.com/mkbntech/app-services.git
+    gitopsRepoUrl: https://github.com/mkbntech/app-services-gitops.git
+    branch: main
+  webhook:
+    secretToken: TrailheadSecureWebhookKey2026!
+  storage:
+    pvName: sno-tekton-pv
+    pvcName: shared-workspace-pvc
+    hostPath: /tmp/sno-tekton-workspace
+    storageSize: 10Gi

@@ -1,0 +1,17 @@
+# SNO Staging Environment Overrides
+
+global:
+  namespace: trailhead-staging
+  environment: sno-staging
+  registryHost: image-registry.openshift-image-registry.svc:5000/trailhead-staging
+
+services:
+  autoscaling:
+    scaleToZeroRetentionPeriod: 90s
+    minScale: 0
+
+tekton-cicd:
+  git:
+    appRepoUrl: https://github.com/mkbntech/app-services.git
+    gitopsRepoUrl: https://github.com/mkbntech/app-services-gitops.git
+    branch: main

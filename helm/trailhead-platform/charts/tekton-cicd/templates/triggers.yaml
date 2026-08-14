@@ -1,0 +1,72 @@
+{{- if .Values.enabled }}
+{{- $ns := .Values.global.namespace | default .Release.Namespace }}
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerBinding
+metadata:
+  name: github-push-binding
+  namespace: {{ $ns }}
+spec:
+  params:
+    - name: git-revision
+      value: $(body.after)
+    - name: git-url
+      value: $(body.repository.clone_url)
+---
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: github-push-template
+  namespace: {{ $ns }}
+spec:
+  params:
+    - name: git-revision
+    - name: git-url
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: trailhead-pipeline-run-
+        namespace: {{ $ns }}
+        labels:
+          tekton.dev/pipeline: trailhead-platform-pipeline
+      spec:
+        serviceAccountName: {{ .Values.serviceAccount.name }}
+        podTemplate:
+          securityContext:
+            runAsUser: 0
+        pipelineRef:
+          name: trailhead-platform-pipeline
+        workspaces:
+          - name: shared-workspace
+            persistentVolumeClaim:
+              claimName: {{ .Values.storage.pvcName }}
+        params:
+          - name: git-url
+            value: $(tt.params.git-url)
+          - name: git-revision
+            value: $(tt.params.git-revision)
+---
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: github-listener
+  namespace: {{ $ns }}
+spec:
+  serviceAccountName: {{ .Values.serviceAccount.name }}
+  triggers:
+    - name: github-push-trigger
+      interceptors:
+        - ref:
+            name: "github"
+          params:
+            - name: "secretRef"
+              value:
+                secretName: github-webhook-secret
+                secretKey: secretToken
+            - name: "eventTypes"
+              value: ["push"]
+      bindings:
+        - ref: github-push-binding
+      template:
+        ref: github-push-template
+{{- end }}
