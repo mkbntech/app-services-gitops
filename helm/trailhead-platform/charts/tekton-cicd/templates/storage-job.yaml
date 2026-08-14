@@ -32,6 +32,9 @@ kind: Job
 metadata:
   name: fix-sno-workspace-permissions
   namespace: {{ $ns }}
+  annotations:
+    argocd.argoproj.io/hook: Sync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded,BeforeHookCreation
 spec:
   template:
     spec:
