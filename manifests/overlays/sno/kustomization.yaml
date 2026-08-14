@@ -6,16 +6,16 @@ bases:
 images:
   - name: image-registry.openshift-image-registry.svc:5000/trailhead-staging/ui-service
     newName: image-registry.openshift-image-registry.svc:5000/trailhead-staging/ui-service
-    newTag: "52bde608b63444426c84eb1137c8257f071d4ca1"
+    newTag: "ae4b659d5005c2c7b4ff1787162039a205dca763"
   - name: image-registry.openshift-image-registry.svc:5000/trailhead-staging/catalogue-service
     newName: image-registry.openshift-image-registry.svc:5000/trailhead-staging/catalogue-service
-    newTag: "52bde608b63444426c84eb1137c8257f071d4ca1"
+    newTag: "ae4b659d5005c2c7b4ff1787162039a205dca763"
   - name: image-registry.openshift-image-registry.svc:5000/trailhead-staging/recommendation-service
     newName: image-registry.openshift-image-registry.svc:5000/trailhead-staging/recommendation-service
-    newTag: "52bde608b63444426c84eb1137c8257f071d4ca1"
+    newTag: "ae4b659d5005c2c7b4ff1787162039a205dca763"
   - name: image-registry.openshift-image-registry.svc:5000/trailhead-staging/review-service
     newName: image-registry.openshift-image-registry.svc:5000/trailhead-staging/review-service
-    newTag: "52bde608b63444426c84eb1137c8257f071d4ca1"
+    newTag: "ae4b659d5005c2c7b4ff1787162039a205dca763"
 patches:
   - target:
       kind: Service
