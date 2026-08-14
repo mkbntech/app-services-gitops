@@ -1,0 +1,15 @@
+dependencies:
+- name: operators
+  repository: file://charts/operators
+  version: 1.0.0
+- name: database
+  repository: file://charts/database
+  version: 1.0.0
+- name: services
+  repository: file://charts/services
+  version: 1.0.0
+- name: tekton-cicd
+  repository: file://charts/tekton-cicd
+  version: 1.0.0
+digest: sha256:2670fdbad302128238991d6bcdbd2eb45d9d6c0a434c36662920dbdfc2e4a2ca
+generated: "2026-08-14T21:51:08.174809124+05:30"
