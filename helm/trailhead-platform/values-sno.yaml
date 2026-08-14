@@ -11,6 +11,7 @@ operators:
 
 services:
   enabled: true
+  tag: main
 
 tekton-cicd:
   git:

@@ -22,6 +22,7 @@ spec:
       containers:
         - name: {{ $svc.name }}
           image: {{ printf "%s/%s:%s" $global.registryHost $svc.imageName $tag | quote }}
+          imagePullPolicy: Always
           ports:
             - containerPort: {{ $svc.port }}
           {{- if $svc.env }}
