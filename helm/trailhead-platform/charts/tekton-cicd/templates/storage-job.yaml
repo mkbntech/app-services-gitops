@@ -40,7 +40,7 @@ spec:
       containers:
         - name: fix-permissions
           image: registry.redhat.io/rhel9/support-tools:latest
-          command: ["sh", "-c", "mkdir -p /workspace/source /workspace/gitops && chmod -R 777 /workspace && chcon -R -t container_file_t /workspace || true"]
+          command: ["sh", "-c", "chmod 777 /workspace && mkdir -p /workspace/source /workspace/gitops && chmod -R 777 /workspace && chcon -R -t container_file_t /workspace || true"]
           securityContext:
             privileged: true
             runAsUser: 0
