@@ -11,7 +11,7 @@ operators:
 
 services:
   enabled: true
-  tag: "e7eef024ba3b28e4dcac4cc8fb892a287f330ee6"
+  tag: "54ca63f0b3bccc29205c6cc5e893464e2b595140"
 
 tekton-cicd:
   git:
