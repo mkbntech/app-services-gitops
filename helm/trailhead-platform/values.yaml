@@ -5,9 +5,9 @@ global:
   environment: sno-staging
   registryHost: image-registry.openshift-image-registry.svc:5000/trailhead-staging
 
-# Subchart 1: Operators Management
+# Subchart 1: Operators Management (Managed separately via trailhead-operators-app)
 operators:
-  enabled: true
+  enabled: false
   pipelines:
     enabled: true
     channel: latest
@@ -39,19 +39,16 @@ database:
       cpu: 500m
       memory: 512Mi
 
-# Subchart 3: Knative Microservices Management
+# Subchart 3: Standard OpenShift Microservices Management (Deployments, Services, Routes)
 services:
   enabled: true
   tag: main
-  autoscaling:
-    scaleToZeroRetentionPeriod: 90s
-    minScale: 0
-    maxScale: 5
   microservices:
     uiService:
       name: ui-service
       imageName: ui-service
       port: 3000
+      replicas: 1
       resources:
         requests:
           cpu: 50m
@@ -63,6 +60,7 @@ services:
       name: catalogue-service
       imageName: catalogue-service
       port: 8001
+      replicas: 1
       resources:
         requests:
           cpu: 50m
@@ -74,6 +72,7 @@ services:
       name: recommendation-service
       imageName: recommendation-service
       port: 8002
+      replicas: 1
       resources:
         requests:
           cpu: 50m
@@ -85,6 +84,7 @@ services:
       name: review-service
       imageName: review-service
       port: 8003
+      replicas: 1
       env:
         SPRING_DATASOURCE_URL: jdbc:postgresql://reviews-db:5432/reviews_db
         SPRING_DATASOURCE_USERNAME: trailhead

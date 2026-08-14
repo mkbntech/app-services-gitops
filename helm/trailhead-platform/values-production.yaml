@@ -10,10 +10,16 @@ operators:
   enabled: false
 
 services:
-  autoscaling:
-    scaleToZeroRetentionPeriod: 300s
-    minScale: 1
-    maxScale: 10
+  enabled: true
+  microservices:
+    uiService:
+      replicas: 2
+    catalogueService:
+      replicas: 2
+    recommendationService:
+      replicas: 2
+    reviewService:
+      replicas: 2
 
 tekton-cicd:
   enabled: false # CI runs in staging, CD deploys to production

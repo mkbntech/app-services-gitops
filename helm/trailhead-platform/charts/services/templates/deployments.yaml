@@ -1,27 +1,27 @@
 {{- if .Values.enabled }}
 {{- $global := .Values.global }}
-{{- $autoscaling := .Values.autoscaling }}
 {{- $tag := .Values.tag }}
 {{- range $key, $svc := .Values.microservices }}
-apiVersion: serving.knative.dev/v1
-kind: Service
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: {{ $svc.name }}
   namespace: {{ $global.namespace | default $.Release.Namespace }}
   labels:
     app: {{ $svc.name }}
 spec:
+  replicas: {{ $svc.replicas | default 1 }}
+  selector:
+    matchLabels:
+      app: {{ $svc.name }}
   template:
     metadata:
-      annotations:
-        autoscaling.knative.dev/scale-to-zero-pod-retention-period: {{ $autoscaling.scaleToZeroRetentionPeriod | quote }}
-        autoscaling.knative.dev/min-scale: {{ $autoscaling.minScale | quote }}
-        {{- if $autoscaling.maxScale }}
-        autoscaling.knative.dev/max-scale: {{ $autoscaling.maxScale | quote }}
-        {{- end }}
+      labels:
+        app: {{ $svc.name }}
     spec:
       containers:
-        - image: {{ printf "%s/%s:%s" $global.registryHost $svc.imageName $tag | quote }}
+        - name: {{ $svc.name }}
+          image: {{ printf "%s/%s:%s" $global.registryHost $svc.imageName $tag | quote }}
           ports:
             - containerPort: {{ $svc.port }}
           {{- if $svc.env }}

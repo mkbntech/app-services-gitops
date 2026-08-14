@@ -1,0 +1,19 @@
+{{- if .Values.enabled }}
+{{- $global := .Values.global }}
+{{- range $key, $svc := .Values.microservices }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $svc.name }}
+  namespace: {{ $global.namespace | default $.Release.Namespace }}
+  labels:
+    app: {{ $svc.name }}
+spec:
+  ports:
+    - port: {{ $svc.port }}
+      targetPort: {{ $svc.port }}
+  selector:
+    app: {{ $svc.name }}
+---
+{{- end }}
+{{- end }}

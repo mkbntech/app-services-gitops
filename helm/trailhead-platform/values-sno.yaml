@@ -10,9 +10,7 @@ operators:
   enabled: false
 
 services:
-  autoscaling:
-    scaleToZeroRetentionPeriod: 90s
-    minScale: 1
+  enabled: true
 
 tekton-cicd:
   git:

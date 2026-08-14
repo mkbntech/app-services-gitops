@@ -1,0 +1,19 @@
+{{- if .Values.enabled }}
+{{- $global := .Values.global }}
+{{- range $key, $svc := .Values.microservices }}
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: {{ $svc.name }}
+  namespace: {{ $global.namespace | default $.Release.Namespace }}
+  labels:
+    app: {{ $svc.name }}
+spec:
+  to:
+    kind: Service
+    name: {{ $svc.name }}
+  port:
+    targetPort: {{ $svc.port }}
+---
+{{- end }}
+{{- end }}
