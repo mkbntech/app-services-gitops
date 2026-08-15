@@ -69,4 +69,17 @@ spec:
         - ref: github-push-binding
       template:
         ref: github-push-template
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: el-github-listener
+  namespace: {{ $ns }}
+spec:
+  port:
+    targetPort: http-listener
+  to:
+    kind: Service
+    name: el-github-listener
+    weight: 100
 {{- end }}
