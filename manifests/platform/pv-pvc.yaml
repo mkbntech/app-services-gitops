@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: sno-tekton-pv
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-sc
+  hostPath:
+    path: /tmp/sno-tekton-workspace
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: shared-workspace-pvc
+  namespace: trailhead-staging
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+  storageClassName: local-sc
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: fix-sno-workspace-permissions
+  namespace: trailhead-staging
+spec:
+  template:
+    spec:
+      serviceAccountName: trailhead-pipeline-sa
+      restartPolicy: Never
+      containers:
+        - name: fix-permissions
+          image: registry.redhat.io/rhel9/support-tools:latest
+          command: ["sh", "-c", "chmod 777 /workspace && mkdir -p /workspace/source /workspace/gitops && chmod -R 777 /workspace && chcon -R -t container_file_t /workspace || true"]
+          securityContext:
+            privileged: true
+            runAsUser: 0
+          volumeMounts:
+            - name: host-workspace
+              mountPath: /workspace
+      volumes:
+        - name: host-workspace
+          hostPath:
+            path: /tmp/sno-tekton-workspace
